@@ -4,7 +4,7 @@ public class Vertex {
 	private int id; //Ip do roteador
 	private int degreeOut; //Grau de saída
 	private int degreeIn; //Graud de entrada
-	private double cost; //Custo do arco adjacente
+	private float cost; //Custo do arco adjacente
 	private double distance; //Estimativa de distância
 	private Vertex parent;  
 	
@@ -23,7 +23,7 @@ public class Vertex {
 	public Vertex(int id){
 		this.nome = "Default_"+id;
 		this.id = id;
-		this.cost = 0;
+		this.cost = 0.0;
 		this.degreeOut = 0; 
 		this.degreeIn = 0;
 		this.distance = Double.POSITIVE_INFINITY;
@@ -88,7 +88,7 @@ public class Vertex {
 			this.degreeIn -= 1;
 	}
 
-	public double getCost() {
+	public float getCost() {
 		return cost;
 	}
 
