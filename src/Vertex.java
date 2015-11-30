@@ -1,5 +1,5 @@
 
-public class Vertex 
+public class Vertex
 {
 	final private String id;
 	final private String name;

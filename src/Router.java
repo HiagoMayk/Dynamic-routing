@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 public class Router 
 {
 	private final List<Vertex> nodes;
@@ -18,17 +17,15 @@ public class Router
 	private Map<Vertex, Integer> distance;
 	
 	private RoutingTable routingTable;
-	private Graph lsdb;
 	private String id;
 	
 	public Router(Graph graph)
 	{
-		// create a copy of the array so that we can operate on this array
 	    this.nodes = new ArrayList<Vertex>(graph.getVertexes());
 	    this.edges = new ArrayList<Edge>(graph.getEdges());
+	    this.routingTable = new RoutingTable();
 	}
 	
-
 	public void execute(Vertex source) 
 	{
 	    settledNodes = new HashSet<Vertex>();
@@ -51,27 +48,23 @@ public class Router
 	    List<Vertex> adjacentNodes = getNeighbors(node);
 	    for (Vertex target : adjacentNodes) 
 	    {
-	      if (getShortestDistance(target) > getShortestDistance(node)
-	          + getDistance(node, target)) 
-	      {
-	        distance.put(target, getShortestDistance(node)
-	            + getDistance(node, target));
-	        predecessors.put(target, node);
-	        unSettledNodes.add(target);
-	      }
+	    	if (getShortestDistance(target) > getShortestDistance(node) + getDistance(node, target))
+	    	{
+	    		distance.put(target, getShortestDistance(node) + getDistance(node, target));
+	    		predecessors.put(target, node);
+	    		unSettledNodes.add(target);
+	    	}
 	    }
-
 	}
 
 	private int getDistance(Vertex node, Vertex target) 
 	{
 	    for (Edge edge : edges) 
 	    {
-	      if (edge.getSource().equals(node)
-	          && edge.getDestination().equals(target)) 
-	      {
-	        return edge.getWeight();
-	      }
+	    	if (edge.getSource().equals(node) && edge.getDestination().equals(target)) 
+	    	{
+	    		return edge.getWeight();
+	    	}
 	    }
 	    throw new RuntimeException("Should not happen");
 	}
@@ -79,12 +72,12 @@ public class Router
 	private List<Vertex> getNeighbors(Vertex node) 
 	{
 	    List<Vertex> neighbors = new ArrayList<Vertex>();
-	    for (Edge edge : edges) {
-	      if (edge.getSource().equals(node)
-	          && !isSettled(edge.getDestination())) 
-	      {
-	        neighbors.add(edge.getDestination());
-	      }
+	    for (Edge edge : edges) 
+	    {
+	    	if (edge.getSource().equals(node) && !isSettled(edge.getDestination())) 
+	    	{
+	    		neighbors.add(edge.getDestination());
+	    	}
 	    }
 	    return neighbors;
 	}
@@ -94,17 +87,17 @@ public class Router
 	    Vertex minimum = null;
 	    for (Vertex vertex : vertexes) 
 	    {
-	      if (minimum == null) 
-	      {
-	        minimum = vertex;
-	      } 
-	      else 
-	      {
-	        if (getShortestDistance(vertex) < getShortestDistance(minimum)) 
-	        {
-	          minimum = vertex;
-	        }
-	      }
+	    	if (minimum == null) 
+	    	{
+	    		minimum = vertex;
+	    	} 
+	    	else 
+	    	{
+	    		if (getShortestDistance(vertex) < getShortestDistance(minimum)) 
+	    		{
+	    			minimum = vertex;
+	    		}
+	    	}
 	    }
 	    return minimum;
 	}
@@ -117,20 +110,16 @@ public class Router
 	private int getShortestDistance(Vertex destination) 
 	{
 	    Integer d = distance.get(destination);
-	    if (d == null) 
+	    if (d == null)
 	    {
-	      return Integer.MAX_VALUE;
+	    	return Integer.MAX_VALUE;
 	    } 
 	    else 
 	    {
-	      return d;
+	    	return d;
 	    }
 	}
 
-	  /*
-	   * This method returns the path from the source to the selected target and
-	   * NULL if no path exists
-	   */
 	public LinkedList<Vertex> getPath(Vertex target) 
 	{
 	    LinkedList<Vertex> path = new LinkedList<Vertex>();
@@ -150,7 +139,27 @@ public class Router
 	    Collections.reverse(path);
 	    return path;
 	}
-	  
+	
+	public void updateRoutingTable()
+	{
+		for(Vertex n : nodes)
+		{
+			if(getPath(n) != null) // If error, use it -> if(getPath(n) != null && !(getPath(n).getFirst().equals(getPath(n).getLast())))
+			{
+				routingTable.setRouter(n, distance.get(n), getPath(n).get(1));
+			}
+		}
+	}
+	 
+	public void printRoutingTable()
+	{
+		for(Vertex v : nodes)
+		{
+			System.out.println(v.getName() + ": Destino - " + routingTable.getNextTable().get(v) + " | custo - " + routingTable.getCostTable().get(v));
+			
+		}
+	}
+	
 	public static void main(String args[]) 
 	{
 		  List<Vertex> nodes;
@@ -159,35 +168,37 @@ public class Router
 		  nodes = new ArrayList<Vertex>();
 		  edges = new ArrayList<Edge>();
 		  
-		    for (int i = 0; i < 11; i++) 
-		    {
-		      Vertex location = new Vertex("Node_" + i, "Node_" + i);
-		      nodes.add(location);
-		    }
+		  for (int i = 0; i < 11; i++) 
+		  {
+			  Vertex location = new Vertex("Node_" + i, "Node_" + i);
+		    	nodes.add(location);
+		  }
 		     
-		    edges.add(new Edge("Edge_0",nodes.get(0), nodes.get(1), 85));
-		    edges.add(new Edge("Edge_1",nodes.get(0), nodes.get(4), 217));
-		    edges.add(new Edge("Edge_2",nodes.get(0), nodes.get(4), 173));
-		    edges.add(new Edge("Edge_3",nodes.get(2), nodes.get(6), 186));
-		    edges.add(new Edge("Edge_4",nodes.get(2), nodes.get(7), 103));
-		    edges.add(new Edge("Edge_5",nodes.get(3), nodes.get(7), 183));
-		    edges.add(new Edge("Edge_6",nodes.get(5), nodes.get(8), 250));
-		    edges.add(new Edge("Edge_7",nodes.get(8), nodes.get(9), 84));
-		    edges.add(new Edge("Edge_8",nodes.get(7), nodes.get(9), 167));
-		    edges.add(new Edge("Edge_9",nodes.get(4), nodes.get(9), 502));
-		    edges.add(new Edge("Edge_10",nodes.get(9), nodes.get(10), 40));
-		    edges.add(new Edge("Edge_11",nodes.get(1), nodes.get(10), 600));
+		  edges.add(new Edge("Edge_0",nodes.get(0), nodes.get(1), 85));
+		  edges.add(new Edge("Edge_1",nodes.get(0), nodes.get(2), 217));
+		  edges.add(new Edge("Edge_2",nodes.get(0), nodes.get(4), 173));
+		  edges.add(new Edge("Edge_3",nodes.get(2), nodes.get(6), 186));
+		  edges.add(new Edge("Edge_4",nodes.get(2), nodes.get(7), 103));
+		  edges.add(new Edge("Edge_5",nodes.get(3), nodes.get(7), 183));
+		  edges.add(new Edge("Edge_6",nodes.get(5), nodes.get(8), 250));
+		  edges.add(new Edge("Edge_7",nodes.get(8), nodes.get(9), 84));
+		  edges.add(new Edge("Edge_8",nodes.get(7), nodes.get(9), 167));
+		  edges.add(new Edge("Edge_9",nodes.get(4), nodes.get(9), 502));
+		  edges.add(new Edge("Edge_10",nodes.get(9), nodes.get(10), 40));
+		  edges.add(new Edge("Edge_11",nodes.get(1), nodes.get(10), 600));
 
-		    // Lets check from location Loc_1 to Loc_10
-		    Graph graph = new Graph(nodes, edges);
-		    Router dijkstra = new Router(graph);
-		    dijkstra.execute(nodes.get(0));
-		    LinkedList<Vertex> path = dijkstra.getPath(nodes.get(10));
+		  // Lets check from location Loc_1 to Loc_10
+		  Graph graph = new Graph(nodes, edges);
+		  Router dijkstra = new Router(graph);
+		  dijkstra.execute(nodes.get(0));
+		  LinkedList<Vertex> path = dijkstra.getPath(nodes.get(10));
 		    
-		    for (Vertex vertex : path) 
-		    {
-		        System.out.println(vertex);
-		    }
+		  for (Vertex vertex : path) 
+		  {
+		      System.out.println(vertex);
+		  }
+		    
+		  dijkstra.updateRoutingTable();
+		  dijkstra.printRoutingTable();
 	}
-	
 }

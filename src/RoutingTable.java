@@ -1,27 +1,35 @@
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoutingTable 
+public class RoutingTable
 {
-	private Map<String, Float> table; 
+	private Map<Vertex, Integer> costTable;
+	private Map<Vertex, Vertex> nextTable;
 	
 	public RoutingTable()
 	{
-		table = new HashMap<String, Float>();
+		costTable = new HashMap<Vertex, Integer>();
+		nextTable = new HashMap<Vertex, Vertex>();
 	}
 	
-	public void setRouter(String id, float cost)
+	public void setRouter(Vertex target, int cost, Vertex nextVertex)
 	{
-		table.put(id, cost);
+		costTable.put(target, cost);
+		nextTable.put(target, nextVertex);
 	}
 	
-	public float getCustRouter(String id)
+	public float getCustRouter(Vertex target)
 	{
-		return table.get(id);
+		return costTable.get(target);
 	}
 	
-	public Map<String, Float> getTable()
+	public Map<Vertex, Integer> getCostTable()
 	{
-		return table;
+		return costTable;
+	}
+	
+	public Map<Vertex, Vertex> getNextTable()
+	{
+		return nextTable;
 	}
 }
