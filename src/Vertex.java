@@ -93,6 +93,4 @@ public class Vertex {
 	public void setCost(float cost) {
 		this.cost = cost;
 	}
-	
-	
 }

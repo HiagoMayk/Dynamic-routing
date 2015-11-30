@@ -5,7 +5,7 @@ import java.util.Map;
 public class Graph 
 {
 	private ArrayList<Vertex> vertex = null;
-	private ArrayList<Map<Vertex, Float>> listAdj  = new ArrayList<Map<Vertex, Float>>();
+	private Map<Vertex, Map<Vertex, Float>> listAdj  = new HashMap<Vertex, Map<Vertex, Float>>();
 	
 	public Graph(ArrayList vertex)
 	{
@@ -20,9 +20,9 @@ public class Graph
 	}
 	
 	public void init()
-	{			
-		for(int i =0; i < this.vertex.size(); i++){
-			this.listAdj.add(i, new HashMap<Vertex, Float>());
+	{	        
+		for(int i = 0; i < this.vertex.size(); i++){
+			this.listAdj.put(this.vertex.get(i), new HashMap<Vertex, Float>());
 		}
 	}
 	
@@ -33,9 +33,13 @@ public class Graph
 	{
 		if(this.vertex.contains(v1) && this.vertex.contains(v2))
 		{
-			this.listAdj.get(this.vertex.indexOf(v1)).put(v2, cost);
+			this.listAdj.get(v1).put(v2, cost);
+			this.listAdj.get(v2).put(v1, cost);
 			v1.increaseDegreeOut();
+			v2.increaseDegreeOut();
 			v2.increaseDegreeIn();
+			v1.increaseDegreeIn();
+			
 		}		
 		else
 		{
@@ -51,9 +55,10 @@ public class Graph
 	{
 		if(this.vertex.contains(v1) && this.vertex.contains(v2))
 		{
-			if(!this.listAdj.get(this.vertex.indexOf(v1)).isEmpty())
+			if(!this.listAdj.get(v1).isEmpty() && !this.listAdj.get(v2).isEmpty())
 			{
-				this.listAdj.get(this.vertex.indexOf(v1)).remove(v2);
+				this.listAdj.get(v1).remove(v2);
+				this.listAdj.get(v2).remove(v1);
 			}
 			else
 			{
@@ -74,11 +79,11 @@ public class Graph
 	{
 		if(this.vertex.contains(v1) && this.vertex.contains(v2))
 		{
-			if(this.listAdj.get(this.vertex.indexOf(v1)).containsKey(v2) == true)
+			if(this.listAdj.get(v1).containsKey(v2) == true)
 			{
 				return true;
 			}
-			return false;			
+			return false;
 		}
 		else
 		{
@@ -101,7 +106,7 @@ public class Graph
 	{
 		if(this.vertex.contains(v))
 		{
-			this.vertex.remove(v.getId());
+			this.vertex.remove(v);
 		}
 		else
 		{
@@ -125,7 +130,7 @@ public class Graph
 	 * 
 	 * Getters e Setters
 	 */
-	public ArrayList<Map<Vertex, Float>> getListAdj()
+	public Map<Vertex, Map<Vertex, Float>> getListAdj()
 	{
 		return this.listAdj;
 	}
@@ -140,7 +145,8 @@ public class Graph
 		this.vertex = v;
 	}
 	
-	public void setListAdj(ArrayList<Map<Vertex, Float>> l){
+	public void setListAdj(Map<Vertex, Map<Vertex, Float>> l)
+	{
 		this.listAdj = l;
 	}
 	
@@ -156,12 +162,12 @@ public class Graph
 		for(int i = 0; i < this.vertex.size(); i++)
 		{
 			out += "--- " + this.vertex.get(i).getNome() + "--- \n";
-			for(int j = 0; j < this.listAdj.get(i).keySet().size(); j++)
+			for(Vertex v : this.listAdj.get(this.vertex.get(i)).keySet())
 			{
-					out += this.listAdj.get(i).get(this.vertex.get(j)) + "\n";
+					out += v.getNome() + " - " + this.listAdj.get(this.vertex.get(i)).get(v) + "\n";
 			}
+			out += "\n";
 		}
-		
 		return out;
 	}
 	
@@ -178,6 +184,7 @@ public class Graph
         Graph g = new Graph(vertex);
  
         g.addEdge(g.getNodes().get(0), g.getNodes().get(1), 4);
+        g.addEdge(g.getNodes().get(0), g.getNodes().get(3), 6);
         
 
         System.out.println(g.toString());
