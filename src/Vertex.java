@@ -8,8 +8,6 @@ public class Vertex {
 	private double distance; //Estimativa de distância
 	private Vertex parent;  
 	
-
-
 	public Vertex(int id, String nome){
 		this.nome = nome;
 		this.id = id;
@@ -23,7 +21,7 @@ public class Vertex {
 	public Vertex(int id){
 		this.nome = "Default_"+id;
 		this.id = id;
-		this.cost = 0.0;
+		this.cost = 0;
 		this.degreeOut = 0; 
 		this.degreeIn = 0;
 		this.distance = Double.POSITIVE_INFINITY;
@@ -92,7 +90,7 @@ public class Vertex {
 		return cost;
 	}
 
-	public void setCost(double cost) {
+	public void setCost(float cost) {
 		this.cost = cost;
 	}
 	
