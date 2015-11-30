@@ -1,140 +1,193 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 public class Router 
 {
+	private final List<Vertex> nodes;
+	private final List<Edge> edges;
+	private Set<Vertex> settledNodes;
+	private Set<Vertex> unSettledNodes;
+	private Map<Vertex, Vertex> predecessors;
+	private Map<Vertex, Integer> distance;
+	
 	private RoutingTable routingTable;
 	private Graph lsdb;
 	private String id;
 	
-	public Router(String id, Graph lsdb)
+	public Router(Graph graph)
 	{
-		routingTable = new RoutingTable();
-		this.lsdb = new Graph();
-		this.id = id;
+		// create a copy of the array so that we can operate on this array
+	    this.nodes = new ArrayList<Vertex>(graph.getVertexes());
+	    this.edges = new ArrayList<Edge>(graph.getEdges());
 	}
 	
-	/*
-	 * Run the algorithm to update routingTable
-	 */
-	public void updateTable()
+
+	public void execute(Vertex source) 
 	{
-		// Implementation
+	    settledNodes = new HashSet<Vertex>();
+	    unSettledNodes = new HashSet<Vertex>();
+	    distance = new HashMap<Vertex, Integer>();
+	    predecessors = new HashMap<Vertex, Vertex>();
+	    distance.put(source, 0);
+	    unSettledNodes.add(source);
+	    while (unSettledNodes.size() > 0) 
+	    {
+	    	Vertex node = getMinimum(unSettledNodes);
+	    	settledNodes.add(node);
+	    	unSettledNodes.remove(node);
+	    	findMinimalDistances(node);
+	    }
+	}
+
+	private void findMinimalDistances(Vertex node) 
+	{
+	    List<Vertex> adjacentNodes = getNeighbors(node);
+	    for (Vertex target : adjacentNodes) 
+	    {
+	      if (getShortestDistance(target) > getShortestDistance(node)
+	          + getDistance(node, target)) 
+	      {
+	        distance.put(target, getShortestDistance(node)
+	            + getDistance(node, target));
+	        predecessors.put(target, node);
+	        unSettledNodes.add(target);
+	      }
+	    }
+
+	}
+
+	private int getDistance(Vertex node, Vertex target) 
+	{
+	    for (Edge edge : edges) 
+	    {
+	      if (edge.getSource().equals(node)
+	          && edge.getDestination().equals(target)) 
+	      {
+	        return edge.getWeight();
+	      }
+	    }
+	    throw new RuntimeException("Should not happen");
+	}
+
+	private List<Vertex> getNeighbors(Vertex node) 
+	{
+	    List<Vertex> neighbors = new ArrayList<Vertex>();
+	    for (Edge edge : edges) {
+	      if (edge.getSource().equals(node)
+	          && !isSettled(edge.getDestination())) 
+	      {
+	        neighbors.add(edge.getDestination());
+	      }
+	    }
+	    return neighbors;
+	}
+
+	private Vertex getMinimum(Set<Vertex> vertexes) 
+	{
+	    Vertex minimum = null;
+	    for (Vertex vertex : vertexes) 
+	    {
+	      if (minimum == null) 
+	      {
+	        minimum = vertex;
+	      } 
+	      else 
+	      {
+	        if (getShortestDistance(vertex) < getShortestDistance(minimum)) 
+	        {
+	          minimum = vertex;
+	        }
+	      }
+	    }
+	    return minimum;
+	}
+
+	private boolean isSettled(Vertex vertex) 
+	{
+	    return settledNodes.contains(vertex);
+	}
+
+	private int getShortestDistance(Vertex destination) 
+	{
+	    Integer d = distance.get(destination);
+	    if (d == null) 
+	    {
+	      return Integer.MAX_VALUE;
+	    } 
+	    else 
+	    {
+	      return d;
+	    }
+	}
+
+	  /*
+	   * This method returns the path from the source to the selected target and
+	   * NULL if no path exists
+	   */
+	public LinkedList<Vertex> getPath(Vertex target) 
+	{
+	    LinkedList<Vertex> path = new LinkedList<Vertex>();
+	    Vertex step = target;
+	    // check if a path exists
+	    if (predecessors.get(step) == null) 
+	    {
+	      return null;
+	    }
+	    path.add(step);
+	    while (predecessors.get(step) != null) 
+	    {
+	      step = predecessors.get(step);
+	      path.add(step);
+	    }
+	    // Put it into the correct order
+	    Collections.reverse(path);
+	    return path;
+	}
+	  
+	public static void main(String args[]) 
+	{
+		  List<Vertex> nodes;
+		  List<Edge> edges;
+		  
+		  nodes = new ArrayList<Vertex>();
+		  edges = new ArrayList<Edge>();
+		  
+		    for (int i = 0; i < 11; i++) 
+		    {
+		      Vertex location = new Vertex("Node_" + i, "Node_" + i);
+		      nodes.add(location);
+		    }
+		     
+		    edges.add(new Edge("Edge_0",nodes.get(0), nodes.get(1), 85));
+		    edges.add(new Edge("Edge_1",nodes.get(0), nodes.get(4), 217));
+		    edges.add(new Edge("Edge_2",nodes.get(0), nodes.get(4), 173));
+		    edges.add(new Edge("Edge_3",nodes.get(2), nodes.get(6), 186));
+		    edges.add(new Edge("Edge_4",nodes.get(2), nodes.get(7), 103));
+		    edges.add(new Edge("Edge_5",nodes.get(3), nodes.get(7), 183));
+		    edges.add(new Edge("Edge_6",nodes.get(5), nodes.get(8), 250));
+		    edges.add(new Edge("Edge_7",nodes.get(8), nodes.get(9), 84));
+		    edges.add(new Edge("Edge_8",nodes.get(7), nodes.get(9), 167));
+		    edges.add(new Edge("Edge_9",nodes.get(4), nodes.get(9), 502));
+		    edges.add(new Edge("Edge_10",nodes.get(9), nodes.get(10), 40));
+		    edges.add(new Edge("Edge_11",nodes.get(1), nodes.get(10), 600));
+
+		    // Lets check from location Loc_1 to Loc_10
+		    Graph graph = new Graph(nodes, edges);
+		    Router dijkstra = new Router(graph);
+		    dijkstra.execute(nodes.get(0));
+		    LinkedList<Vertex> path = dijkstra.getPath(nodes.get(10));
+		    
+		    for (Vertex vertex : path) 
+		    {
+		        System.out.println(vertex);
+		    }
 	}
 	
-	/*
-	 * Recaculates the cost in for all router applying the dijkstra algorithm
-	 */
-	public void costsRecalculatesDijktra()
-	{
-		
-	}
-	
-	/*
-	 * Recaculates the cost in for all router applying the Bellman-Ford algorithm
-	 */
-	public void costsRecalculatesBellmanFord()
-	{
-		
-	}
-	
-	/*
-    // Algoritmo de Dijkstra
-    public List<Vertice> encontrarMenorCaminhoDijkstra(Vertice v1, Vertice v2) {
-
-            // No início, todos os vértices do grafo não foram visitados
-            verticesNaoVisitados = this.la.size();
-
-            // O primeiro nó a ser visitado é o da origem do caminho
-            atual = v1;
-            // Adiciona o primeiro nó no corte
-            fronteira.add(atual);
-            // Adiciona a origem na lista do menor caminho
-            menorCaminho.add(atual);
-
-            // Colocando a distancias iniciais
-            for (int i = 0; i < this.la.size(); i++) {
-
-                    // Nó atual tem distância zero, e todos os outros, 9999(infinita)
-                    if (this.la.containsValue(atual.getDescricao())) {
-                            
-                     ((Vertice) this.la.get(i)).getDescricao();
-                            //this.vertices.get(i).setDistancia(0);
-
-                    } else {
-
-                            ((Vertice) this.la.get(i)).setDistancia(9999);
-
-                    }
-            }
-
-            // O algoritmo continua até que todos os vértices sejam visitados
-            while (verticesNaoVisitados != 0) {
-
-                    // Toma-se sempre o vértice com menor distância, que é o primeiro da
-                    // lista do corte
-                    atual = this.fronteira.get(0);
-                    /*
-                     * Para cada vizinho (cada aresta), calcula-se a sua possível
-                     * distância, somando a distância do vértice atual com a da aresta
-                     * correspondente. Se essa distância for menor que a distância do
-                     * vizinho, esta é atualizada.
-                     
-                    for (int i = 0; i < la.size(); i++) {
-
-                            vizinho = atual.getArestas().get(i).getDestino();
-                            if (!vizinho.verificarVisita()) {
-
-                                    vizinho.setPai(atual);
-
-                                    // Comparando a distância do vizinho com a possível
-                                    // distância
-                                    if (vizinho.getDistancia() > (atual.getDistancia() + atual
-                                                    .getArestas().get(i).getPeso())) {
-
-                                            vizinho.setDistancia(atual.getDistancia()
-                                                            + atual.getArestas().get(i).getPeso());
-
-                                            /*
-                                             * Se o vizinho é o vértice procurado, e foi feita uma
-                                             * mudança na distância, a lista com o menor caminho
-                                             * anterior é apagada, pois existe um caminho menor
-                                             * ainda. Cria-se a nova lista do menor caminho, com os
-                                             * vértices pais, até o vértice origem.
-                                             
-                                            if (vizinho == v2) {
-                                                    menorCaminho.clear();
-                                                    verticeCaminho = vizinho;
-                                                    menorCaminho.add(vizinho);
-                                                    while (verticeCaminho.getPai() != null) {
-
-                                                            menorCaminho.add(verticeCaminho.getPai());
-                                                            verticeCaminho = verticeCaminho.getPai();
-
-                                                    }
-                                                    // Ordena a lista do menor caminho, para que ele
-                                                    // seja exibido da origem ao destino.
-                                                    Collections.sort(menorCaminho);
-
-                                            }
-                                    }
-                                    // Cada vizinho, depois de visitado, é adicionado ao corte
-                                    this.fronteira.add(vizinho);
-                            }
-
-                    }
-                    // Marca o vértice atual como visitado e o retira do corte
-                    atual.visitar();
-                    verticesNaoVisitados--;
-                    this.fronteira.remove(atual);
-                    /*
-                     * Ordena a lista do corte, para que o vértice com menor distância
-                     * fique na primeira posição
-                     
-
-                    Collections.sort(fronteira);
-
-            }
-
-            return menorCaminho;
-    }
-*/
 }
