@@ -1,17 +1,20 @@
 -------------------------------------------------------- Planejamento ----------------------------------------------------------------
 
 Feito:
-
+	- implementação grafo
+	- implementado Dijkstra-SPF
+ 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------
 
 Em andamento:
- - Modelagem: Mayk, stefano
-
-
+	- Modelagem
+	- Implementação do simulador
+	- implementação da thread de usuário
+	- implementação da entrada de arquivo para o grafo
+	
 ---------------------------------------------------------------------------------------------------------------------------------------------
 A ser feito:
 
-- implementação grafo
-- implementado Dijkstra-SPF
+
 - implementação Bellman–Ford
