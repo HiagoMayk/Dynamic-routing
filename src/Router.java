@@ -9,21 +9,37 @@ import java.util.Set;
 
 public class Router 
 {
-	private final List<Vertex> nodes;
-	private final List<Edge> edges;
+	private List<Vertex> nodes;
+	private List<Edge> edges;
 	private Set<Vertex> settledNodes;
 	private Set<Vertex> unSettledNodes;
 	private Map<Vertex, Vertex> predecessors;
 	private Map<Vertex, Integer> distance;
 	
 	private RoutingTable routingTable;
-	private String id;
+	private Boolean flag;
+	private Vertex id;
 	
-	public Router(Graph graph)
+	public Router(Vertex id, Graph graph)
 	{
 	    this.nodes = new ArrayList<Vertex>(graph.getVertexes());
 	    this.edges = new ArrayList<Edge>(graph.getEdges());
 	    this.routingTable = new RoutingTable();
+	    this.id = id;
+	}
+	
+	public Router(Vertex id)
+	{
+		this.nodes = new ArrayList<Vertex>();
+	    this.edges = new ArrayList<Edge>();
+	    this.routingTable = new RoutingTable();
+	    this.id = id;
+	}
+	
+	public void setGraph(Graph graph)
+	{
+		this.nodes = new ArrayList<Vertex>(graph.getVertexes());
+	    this.edges = new ArrayList<Edge>(graph.getEdges());
 	}
 	
 	public void execute(Vertex source) 
@@ -153,52 +169,11 @@ public class Router
 	 
 	public void printRoutingTable()
 	{
+		System.out.println("-------- " + id.getName() + " --------");
 		for(Vertex v : nodes)
 		{
-			System.out.println(v.getName() + ": Destino - " + routingTable.getNextTable().get(v) + " | custo - " + routingTable.getCostTable().get(v));
+			System.out.println(v.getName() + ": Next - " + routingTable.getNextTable().get(v) + " | cost - " + routingTable.getCostTable().get(v));
 			
 		}
-	}
-	
-	public static void main(String args[]) 
-	{
-		  List<Vertex> nodes;
-		  List<Edge> edges;
-		  
-		  nodes = new ArrayList<Vertex>();
-		  edges = new ArrayList<Edge>();
-		  
-		  for (int i = 0; i < 11; i++) 
-		  {
-			  Vertex location = new Vertex("Node_" + i, "Node_" + i);
-		    	nodes.add(location);
-		  }
-		     
-		  edges.add(new Edge("Edge_0",nodes.get(0), nodes.get(1), 85));
-		  edges.add(new Edge("Edge_1",nodes.get(0), nodes.get(2), 217));
-		  edges.add(new Edge("Edge_2",nodes.get(0), nodes.get(4), 173));
-		  edges.add(new Edge("Edge_3",nodes.get(2), nodes.get(6), 186));
-		  edges.add(new Edge("Edge_4",nodes.get(2), nodes.get(7), 103));
-		  edges.add(new Edge("Edge_5",nodes.get(3), nodes.get(7), 183));
-		  edges.add(new Edge("Edge_6",nodes.get(5), nodes.get(8), 250));
-		  edges.add(new Edge("Edge_7",nodes.get(8), nodes.get(9), 84));
-		  edges.add(new Edge("Edge_8",nodes.get(7), nodes.get(9), 167));
-		  edges.add(new Edge("Edge_9",nodes.get(4), nodes.get(9), 502));
-		  edges.add(new Edge("Edge_10",nodes.get(9), nodes.get(10), 40));
-		  edges.add(new Edge("Edge_11",nodes.get(1), nodes.get(10), 600));
-
-		  // Lets check from location Loc_1 to Loc_10
-		  Graph graph = new Graph(nodes, edges);
-		  Router dijkstra = new Router(graph);
-		  dijkstra.execute(nodes.get(0));
-		  LinkedList<Vertex> path = dijkstra.getPath(nodes.get(10));
-		    
-		  for (Vertex vertex : path) 
-		  {
-		      System.out.println(vertex);
-		  }
-		    
-		  dijkstra.updateRoutingTable();
-		  dijkstra.printRoutingTable();
 	}
 }
