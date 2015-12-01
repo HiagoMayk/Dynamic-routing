@@ -2,12 +2,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
-public class Simulator 
-{
+public class Simulator {
 	public static void main(String args[]) 
 	{
-		  Boolean flag = true;
+/*		  boolean flag = true;
 		  int qtdVertex = 11;
 		  List<Vertex> nodes = new ArrayList<Vertex>();
 		  List<Edge> edges =new ArrayList<Edge>();
@@ -17,7 +15,7 @@ public class Simulator
 		  
 		  for (int i = 0; i < qtdVertex; i++)
 		  {
-			  Vertex location = new Vertex("Node_" + i, "Node_" + i);
+			  Vertex location = new Vertex( i, "Node_" + i);
 		    	nodes.add(location);
 		    	router.add(new Router(location));
 		  }
@@ -45,7 +43,20 @@ public class Simulator
 			  router.get(i).updateRoutingTable();
 			  router.get(i).printRoutingTable();
 		  }
+*/		
+			
+			
+		  ArrayList<Router> router = new ArrayList<Router>();
+		  Entrada entrada = new Entrada();
+		  Graph grafo = entrada.lerGrafo(router);
+		  grafo.toString();
 		  
-		  //verificator = new Verificator(flag, router, graph);
+		  Thread t = new Thread(new Verificator(router,grafo));
+		  t.start();
+		  
+		  while(true){
+			  grafo = entrada.lerInterrupcao(grafo);
+			  Thread.currentThread().notifyAll();
+		  }	
 	}
 }
