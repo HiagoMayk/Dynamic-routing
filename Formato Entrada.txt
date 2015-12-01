@@ -1,0 +1,9 @@
+Quantidade de vertices
+Quantidade de arestas
+vertice1 vertice2  custo   (aresta 1)
+vertice1 vertice2  custo   (aresta 2)
+vertice1 vertice2  custo   (aresta 3)
+vertice1 vertice2  custo   (aresta 4)
+vertice1 vertice2  custo   (aresta 5)
+vertice1 vertice2  custo   (aresta 6)
+  ...      ...     ...            
