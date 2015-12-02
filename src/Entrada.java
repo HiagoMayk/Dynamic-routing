@@ -76,7 +76,7 @@ public class Entrada {
 
 			break;
 
-		case 2:
+		case 2: // Destroi o caminho ou 1 edge?
 			System.out.println("Digite o numero do vértice origem: ");
 			int no1 = sc.nextInt(); // Source
 
