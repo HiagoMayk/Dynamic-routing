@@ -9,18 +9,35 @@ public class Simulator {
 		  Entrada entrada = new Entrada();
 		  System.out.println("Digite o grafo de entrada:");
 		  Graph grafo = entrada.lerGrafo(router);
+		  int size = grafo.getVertexes().size();
 		  grafo.toString();
   
+		  for (int i = 0; i < grafo.getVertexes().size(); i++)
+		  {
+				router.get(i).setGraph(grafo);
+				router.get(i).execute(grafo.getVertexes().get(i));
+				router.get(i).updateRoutingTable();
+				router.get(i).printRoutingTable();
+		  }
+		  
 		  while(true)
 		  {
 			  grafo = entrada.lerInterrupcao(grafo);
-			  for (int i = 0; i < grafo.getVertexes().size(); i++)
+			  
+			  if(size != grafo.getVertexes().size())
 			  {
-					router.get(i).setGraph(grafo);
-					router.get(i).execute(grafo.getVertexes().get(i));
-					router.get(i).updateRoutingTable();
-					router.get(i).printRoutingTable();
+				  size = grafo.getVertexes().size();
+				  System.out.println("Sim");
+				  for (int i = 0; i < grafo.getVertexes().size(); i++)
+				  {
+						router.get(i).setGraph(grafo);
+						router.get(i).execute(grafo.getVertexes().get(i));
+						router.get(i).updateRoutingTable();
+						router.get(i).printRoutingTable();
+				  }
 			  }
+			  System.out.println("Não");
+			  
 		  }	
 	}
 }

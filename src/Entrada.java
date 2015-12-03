@@ -30,15 +30,25 @@ public class Entrada
 			edges.add(new Edge("Edge_0", nodes.get(no1), nodes.get(no2), custo));
 		}
 
-		Graph graph = new Graph(nodes, edges);
+		Graph graph = new Graph(nodes);
+		for(Edge e : edges)
+		{
+			graph.setBothEdges(e.getId(), e.getSource(), e.getDestination(), e.getWeight());
+		}
+		
 		System.out.println("Grafo criado!");
 		return graph;
 	}
 
 	public Graph lerInterrupcao(Graph grafo) 
 	{
-		System.out.println("MENU");
-		//System.out.println("MENU");
+		System.out.println("");
+		System.out.println("    MENU    ");
+		System.out.println("1   -------   Remover aresta");
+		System.out.println("2   -------   Remover vértices");
+		System.out.println("3   -------   Inserir aresta");
+		System.out.println("4   -------   Inserir vertice");
+		System.out.println("0   -------   Sair");
 		
 		System.out.println("Lendo interrupção:");
 		int opcao = sc.nextInt();
@@ -47,7 +57,6 @@ public class Entrada
 
 		switch (opcao) 
 		{
-
 			case 1:
 				System.out.println("Digite o numero do vertice: ");
 				int numVertice = sc.nextInt();
@@ -90,8 +99,10 @@ public class Entrada
 				int no2 = sc.nextInt(); // Target
 				// remover aresta no grafo
 				boolean flag1 = true;
-				while (flag1){
-					try {
+				while (flag1)
+				{
+					try 
+					{
 						Vertex v1 = nodes.get(no1);
 						Vertex v2 = nodes.get(no2);
 						List<Edge> ed = grafo.getEdges();
@@ -105,7 +116,8 @@ public class Entrada
 						}
 						grafo.setEdges(ed);
 						flag1 = false;
-					} catch (Exception e) 
+					} 
+					catch (Exception e) 
 					{
 						// TODO: handle exception
 						System.out.println(
@@ -114,6 +126,9 @@ public class Entrada
 				}
 				break;
 			case 3:
+				// faz nada
+				break;
+			case 0:
 				System.exit(0);
 				return null;
 	

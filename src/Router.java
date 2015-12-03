@@ -169,6 +169,7 @@ public class Router
 	 
 	public void printRoutingTable()
 	{
+		System.out.println("");
 		System.out.println("Index  -------- " + id.getName() + " --------");
 		int i = 0; 
 		for(Vertex v : nodes)
