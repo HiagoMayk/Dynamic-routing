@@ -27,7 +27,7 @@ public class Entrada
 			int no1 = sc.nextInt();
 			int no2 = sc.nextInt();
 			int custo = sc.nextInt(); //FALTA DIVIDIR POR VALOR REFERENCIA!!!!!
-			edges.add(new Edge("Edge_0", nodes.get(no1), nodes.get(no2), custo));
+			edges.add(new Edge(("Edge_"+j), nodes.get(no1), nodes.get(no2), custo));
 		}
 
 		Graph graph = new Graph(nodes);
@@ -42,12 +42,13 @@ public class Entrada
 
 	public Graph lerInterrupcao(Graph grafo) 
 	{
-		System.out.println("");
+		System.out.println("----------------------------------------------------");
 		System.out.println("    MENU    ");
-		System.out.println("1   -------   Remover aresta");
-		System.out.println("2   -------   Remover vértices");
-		System.out.println("3   -------   Inserir aresta");
-		System.out.println("4   -------   Inserir vertice");
+		System.out.println("0   -------   Sair");
+		System.out.println("1   -------   Remover vértice");
+		System.out.println("2   -------   Remover aresta");
+		//System.out.println("3   -------   Inserir aresta");
+		//System.out.println("4   -------   Inserir vértice");
 		System.out.println("0   -------   Sair");
 		
 		System.out.println("Lendo interrupção:");
@@ -58,37 +59,46 @@ public class Entrada
 		switch (opcao) 
 		{
 			case 1:
-				System.out.println("Digite o numero do vertice: ");
-				int numVertice = sc.nextInt();
-				/*
-				 * REMOVE O VÉRTICE
-				 */
-				boolean flag = true;
-				while (flag) 
+				
+				if(grafo.getVertexes().isEmpty())
 				{
-					try 
+					System.out.println("Grafo Vazio!");
+					
+				}
+				else
+				{
+					System.out.println("Digite o numero do vertice: ");
+					int numVertice = sc.nextInt();
+					/*
+					 * REMOVE O VÉRTICE
+					 */
+					boolean flag = true;
+					while (flag) 
 					{
-						Vertex v = grafo.getVertexes().get(numVertice);
-						List<Edge> edges = grafo.getEdges();
-						for (int i = 0; i < edges.size(); i++) 
+						try 
 						{
-							if (edges.get(i).getDestination().equals(v) || edges.get(i).getSource().equals(v))
+							Vertex v = grafo.getVertexes().get(numVertice);
+							List<Edge> edges = grafo.getEdges();
+							for (int i = 0; i < edges.size(); i++) 
 							{
-								edges.remove(i);
+								if (edges.get(i).getDestination().equals(v) || edges.get(i).getSource().equals(v))
+								{
+									edges.remove(i);
+								}
 							}
+							grafo.getVertexes().remove(v);
+							grafo.setEdges(edges);
+							flag = false;
+						} 
+						catch (Exception e)
+						{
+							// TODO: handle exception
+							System.out.println(
+									"Número inválido! Insira um número entre 0  e " + (grafo.getVertexes().size() - 1));
 						}
-						grafo.getVertexes().remove(v);
-						grafo.setEdges(edges);
-						flag = false;
-					} 
-					catch (Exception e)
-					{
-						// TODO: handle exception
-						System.out.println(
-								"Número inválido! Insira um número entre 0  e " + (grafo.getVertexes().size() - 1));
 					}
 				}
-	
+				
 				break;
 	
 			case 2:
@@ -107,12 +117,19 @@ public class Entrada
 						Vertex v2 = nodes.get(no2);
 						List<Edge> ed = grafo.getEdges();
 						
+						boolean r = false;
 						for (int i = 0; i < ed.size(); i++) 
 						{
 							if ((ed.get(i).getSource().equals(v1) && ed.get(i).getDestination().equals(v2))
 									|| (ed.get(i).getSource().equals(v2) && ed.get(i).getDestination().equals(v1))) {
 								ed.remove(i);
+								r = true;
 							}
+						}
+						
+						if(r)
+						{
+							System.out.println("Aresta não existe!");
 						}
 						grafo.setEdges(ed);
 						flag1 = false;
@@ -124,9 +141,6 @@ public class Entrada
 								"Número inválido! Insira dois número entre 0  e " + (grafo.getVertexes().size() - 1));
 					}
 				}
-				break;
-			case 3:
-				// faz nada
 				break;
 			case 0:
 				System.exit(0);
