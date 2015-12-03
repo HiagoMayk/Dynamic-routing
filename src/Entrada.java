@@ -61,6 +61,10 @@ public class Entrada
 
 		switch (opcao) 
 		{
+			case 0:
+				System.exit(0);
+				return null;
+		
 			case 1:
 				
 				if(grafo.getVertexes().isEmpty())
@@ -112,6 +116,7 @@ public class Entrada
 							// TODO: handle exception
 							System.out.println(
 									"Número inválido! Insira um número entre 0  e " + (grafo.getVertexes().size() - 1));
+							indexVertice = sc.nextInt();
 						}
 					}
 				}
@@ -154,9 +159,12 @@ public class Entrada
 						// TODO: handle exception
 						System.out.println(
 								"Número inválido! Insira dois número entre 0  e " + (grafo.getVertexes().size() - 1));
+						no1 = sc.nextInt(); // Source
+						no2 = sc.nextInt(); // Source
 					}
 				}
 				break;
+				
 			case 3:
 				System.out.println("Digite o ID do novo vértice: ");
 				int nodeId = sc.nextInt(); // Source
@@ -185,9 +193,49 @@ public class Entrada
 					flag3 = false;
 				}
 				break;
-			case 0:
-				System.exit(0);
-				return null;
+				
+			case 4:
+				System.out.println("Digite o indice do primeiro vértice: ");
+				no1 = sc.nextInt(); // Source
+	
+				System.out.println("Digite o indice do segundo vértice: ");
+				no2 = sc.nextInt(); // Target
+				
+				System.out.println("Digite o custo do vértice: ");
+				int custo = sc.nextInt(); // Target
+				
+				
+				boolean flag4 = true;
+				while (flag4)
+				{
+					try{
+						if((grafo.getVertexes().get(no1) == null) || (grafo.getVertexes().get(no2) == null )){
+							throw new Exception();
+						}
+						
+						for(Edge e : grafo.getEdges() ){
+							if((e.getSource() == grafo.getVertexes().get(no1) && e.getDestination() == grafo.getVertexes().get(no2)) || 
+									(e.getSource() == grafo.getVertexes().get(no2) && e.getDestination() == grafo.getVertexes().get(no1))){								
+								throw new Exception();
+							}
+						}
+						grafo.setBothEdges(grafo.getEdges().size()+"",grafo.getVertexes().get(no2), grafo.getVertexes().get(no1), custo);
+										
+						
+					}
+					catch(Exception e){
+						
+						System.out.println(
+								"Entrada Inválida! Insira dois número entre 0  e " + (grafo.getVertexes().size() - 1));						
+						System.out.println("Digite o indice do primeiro vértice: ");
+						no1 = sc.nextInt(); // Source
+			
+						System.out.println("Digite o indice do segundo vértice: ");
+						no2 = sc.nextInt(); // Target
+						
+						
+					}
+				}
 	
 			default:
 				System.out.println("Opção inválida!");
