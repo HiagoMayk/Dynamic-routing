@@ -132,14 +132,13 @@ public class Entrada
 					{
 						Vertex v1 = nodes.get(no1);
 						Vertex v2 = nodes.get(no2);
-						List<Edge> ed = grafo.getEdges();
-						
+												
 						boolean r = false;
-						for (int i = 0; i < ed.size(); i++)
+						for (int i = 0; i < grafo.getEdges().size(); i++)
 						{
-							if ((ed.get(i).getSource().equals(v1) && ed.get(i).getDestination().equals(v2))
-									|| (ed.get(i).getSource().equals(v2) && ed.get(i).getDestination().equals(v1))) {
-								ed.remove(i);
+							if ((grafo.getEdges().get(i).getSource().equals(v1) && grafo.getEdges().get(i).getDestination().equals(v2))
+									|| (grafo.getEdges().get(i).getSource().equals(v2) && grafo.getEdges().get(i).getDestination().equals(v1))) {
+								grafo.getEdges().remove(i);
 								r = true;
 							}
 						}
@@ -148,7 +147,6 @@ public class Entrada
 						{
 							System.out.println("Aresta não existe!");
 						}
-						grafo.setEdges(ed);
 						flag1 = false;
 					} 
 					catch (Exception e) 
