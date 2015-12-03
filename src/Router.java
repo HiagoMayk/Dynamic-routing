@@ -17,9 +17,8 @@ public class Router
 	private Map<Vertex, Integer> distance;
 	
 	private RoutingTable routingTable;
-	private Boolean flag;
 	private Vertex id;
-	
+
 	public Router(Vertex id, Graph graph)
 	{
 	    this.nodes = new ArrayList<Vertex>(graph.getVertexes());
@@ -40,6 +39,7 @@ public class Router
 	{
 		this.nodes = new ArrayList<Vertex>(graph.getVertexes());
 	    this.edges = new ArrayList<Edge>(graph.getEdges());
+	    this.routingTable = new RoutingTable();
 	}
 	
 	public void execute(Vertex source) 
@@ -48,8 +48,10 @@ public class Router
 	    unSettledNodes = new HashSet<Vertex>();
 	    distance = new HashMap<Vertex, Integer>();
 	    predecessors = new HashMap<Vertex, Vertex>();
+	    
 	    distance.put(source, 0);
 	    unSettledNodes.add(source);
+	    
 	    while (unSettledNodes.size() > 0) 
 	    {
 	    	Vertex node = getMinimum(unSettledNodes);
@@ -73,7 +75,7 @@ public class Router
 	    }
 	}
 
-	private int getDistance(Vertex node, Vertex target) 
+	private int getDistance(Vertex node, Vertex target)
 	{
 	    for (Edge edge : edges) 
 	    {
@@ -140,7 +142,7 @@ public class Router
 	{
 	    LinkedList<Vertex> path = new LinkedList<Vertex>();
 	    Vertex step = target;
-	    // check if a path exists
+	    
 	    if (predecessors.get(step) == null) 
 	    {
 	      return null;
@@ -151,13 +153,14 @@ public class Router
 	      step = predecessors.get(step);
 	      path.add(step);
 	    }
-	    // Put it into the correct order
+	    
 	    Collections.reverse(path);
 	    return path;
 	}
 	
 	public void updateRoutingTable()
 	{
+		this.routingTable = new RoutingTable();	
 		for(Vertex n : nodes)
 		{
 			if(getPath(n) != null) // If error, use it -> if(getPath(n) != null && !(getPath(n).getFirst().equals(getPath(n).getLast())))
@@ -170,6 +173,7 @@ public class Router
 	public void printRoutingTable()
 	{
 		System.out.println("");
+		
 		System.out.println("Index  -------- " + id.getName() + " --------");
 		int i = 0; 
 		for(Vertex v : nodes)
@@ -177,5 +181,15 @@ public class Router
 			System.out.println(i + "     " + v.getName() + ": Next - " + routingTable.getNextTable().get(v) + " | cost - " + routingTable.getCostTable().get(v));
 			i++;
 		}
+	}
+	
+	public Vertex getId() 
+	{
+		return id;
+	}
+
+	public void setId(Vertex id) 
+	{
+		this.id = id;
 	}
 }
