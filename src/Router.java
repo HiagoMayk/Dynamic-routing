@@ -169,11 +169,12 @@ public class Router
 	 
 	public void printRoutingTable()
 	{
-		System.out.println("-------- " + id.getName() + " --------");
+		System.out.println("Index  -------- " + id.getName() + " --------");
+		int i = 0; 
 		for(Vertex v : nodes)
 		{
-			System.out.println(v.getName() + ": Next - " + routingTable.getNextTable().get(v) + " | cost - " + routingTable.getCostTable().get(v));
-			
+			System.out.println(i + "     " + v.getName() + ": Next - " + routingTable.getNextTable().get(v) + " | cost - " + routingTable.getCostTable().get(v));
+			i++;
 		}
 	}
 }
